@@ -332,6 +332,46 @@ ggplot() +
 ```
 It would result to This Map/Output
 ![Makkah 2](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/8d57587f-4cb6-4ae7-9e53-83d8eb593ebc)
+I also want to try another example for a southern hemisphere region ,An Example is From Morogoro Region,Tanzania So How does it appear to adjust coordinates
+```r
+library(climateR)
+library(terra)
+library(tidyterra)
+library(ggplot2)
+library(sf)
+library(shapefiles)
+
+MOR <- st_read("C:/Moro.shp")
+test_data = getTerraClim(
+  AOI = MOR,
+  varname = "tmax",
+  startDate = "2011-01-01",
+  endDate   = "2012-12-01"
+)
+
+data = tapp(test_data[[1]],
+            rep(1:12, (nlyr(test_data[[1]]) / 12)),
+            mean) |>
+  mask(project(vect(MOR), crs(test_data[[1]])))
+
+names(data) = c("January", "February","March","April","May","June","July","August","September","October","November","December")
+
+ggplot() +
+  geom_spatraster(data = data) +
+  geom_spatvector(data = MOR, fill = NA, lwd = 1) +
+  facet_wrap( ~ lyr) +
+  scale_fill_whitebox_c(
+    palette  = "muted",
+    n.breaks = 12,
+    guide    = guide_legend(reverse = TRUE)
+  ) +
+  labs(title = "Monthly Temperature of Morogoro Region for years 2011 and 2012",fill = "Temperature (°C)") +
+  theme_minimal()+ 
+  coord_sf(xlim = c(35.5, 40), ylim = c(-5.5, -10.5)) # Adjust longitude values as needed
+```
+It would result into this Output
+![Morogoro](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/9c2465d9-66a9-48ea-b7da-69df0ccf567d)
+
 
 # Final Touches - Pallete explanation
 So I wanted to share you the pallete is used found in Tidyterra
