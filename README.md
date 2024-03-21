@@ -415,6 +415,45 @@ ggplot() +
 Which would result into following output
 ![Saudi New](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/c50e92ea-c865-4267-a312-bd165028dacd)
 
+Also Another example is Monthly Visualization which I would illustrate as follows
+```r
+library(climateR)
+library(terra)
+library(tidyterra)
+library(ggplot2)
+library(colorspace)
+
+SAU = AOI::aoi_get(country = "SAU")
+
+test_data = getTerraClim(
+  AOI = SAU,
+  varname = "tmax",
+  startDate = "2011-01-01",
+  endDate   = "2012-12-01"
+)
+
+data = tapp(test_data[[1]],
+            rep(1:12, (nlyr(test_data[[1]]) / 12)),
+            mean) |>
+  mask(project(vect(SAU), crs(test_data[[1]])))
+
+names(data) = c("January", "February","March","April","May","June","July","August","September","October","November","December")
+ggplot() +
+  geom_spatraster(data = data) +
+  geom_spatvector(data = SAU, fill = NA, lwd = 1) + # Set color to "black"
+  facet_wrap( ~ lyr) +
+  scale_fill_continuous_sequential(palette = "YlOrRd",na.value = "transparent") +
+  labs(title = "Monthly temperature of Saudi Arabia of the years 2011 and 2012",
+       fill = "Temperature (°C)") + # Add title
+  theme_minimal()
+```
+which would result into following output
+
+![Saudi Month New](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/0e32ca50-28ef-4c0d-9f48-f8f9961e2fb0)
+
+
+
+
 Colorspace has a lot of color choices which you could use in Visualizing Temperature and Precipitation ,In which i would illustrate further
 # Final Touches - Pallete explanation
 So I wanted to share you the pallete is used found in Tidyterra
