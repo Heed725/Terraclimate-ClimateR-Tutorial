@@ -291,6 +291,48 @@ Which would bring This Output
 
 ![MAK](https://github.com/Heed725/Terraclimate-ClimateR/assets/86722789/be71ea91-dc18-4f52-89ee-9d10bd1650b3)
 
+# Adjusting Longitude and Latitude
+Sometimes The default coordinates doesn't appear nicely (For example above coordinate) so all you need to do is to Adjust using coord_sf function as illustrated below ,xlim represent Longitude while ylim represent latitude which you can adjust manually
+
+```r
+library(climateR)
+library(terra)
+library(tidyterra)
+library(ggplot2)
+library(sf)
+library(shapefiles)
+
+MAK <- st_read("C:/Makkah.shp")
+test_data = getTerraClim(
+  AOI = MAK,
+  varname = "tmax",
+  startDate = "2011-01-01",
+  endDate   = "2012-12-01"
+)
+
+data = tapp(test_data[[1]],
+            rep(1:12, (nlyr(test_data[[1]]) / 12)),
+            mean) |>
+  mask(project(vect(MAK), crs(test_data[[1]])))
+
+names(data) = c("January", "February","March","April","May","June","July","August","September","October","November","December")
+
+ggplot() +
+  geom_spatraster(data = data) +
+  geom_spatvector(data = MAK, fill = NA, lwd = 1) +
+  facet_wrap( ~ lyr) +
+  scale_fill_whitebox_c(
+    palette  = "muted",
+    n.breaks = 12,
+    guide    = guide_legend(reverse = TRUE)
+  ) +
+  labs(title = "Monthly Temperature of Makkah Province for years 2011 and 2012",fill = "Temperature (°C)") +
+  theme_minimal() +
+  coord_sf(xlim = c(36, 45), ylim = c(21, 29)) # Adjust longitude values as needed
+```
+It would result to This Map/Output
+![Makkah 2](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/8d57587f-4cb6-4ae7-9e53-83d8eb593ebc)
+
 # Final Touches - Pallete explanation
 So I wanted to share you the pallete is used found in Tidyterra
 The words "muted" and "deep" are color palette used ,normally for Temperature and Rainfall Representation Below is PNG of more color pallete
