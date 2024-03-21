@@ -332,7 +332,7 @@ ggplot() +
 ```
 It would result to This Map/Output
 ![Makkah 2](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/8d57587f-4cb6-4ae7-9e53-83d8eb593ebc)
-I also want to try another example for a southern hemisphere region ,An Example is From Morogoro Region,Tanzania So How does it appear to adjust coordinates
+I also want to try another example for a southern hemisphere region ,An Example is From Morogoro Region,Tanzania So How does it appear when you adjust coordinates
 ```r
 library(climateR)
 library(terra)
