@@ -1,5 +1,5 @@
 ## Terraclimate Map visualization using ClimateR Tutorial
-This Tutorial below is on How to create climateR maps using Terraclimate dataset  this will Include Yearly,Monthly and Finally Mean As illustrated ,The Main Country/Area of Interest would be Kingdom of Saudi Arabia and Before I continue Much Special Thanks to Creator of ClimateR Mike Johnson -[@mikejohnson51] you can check it out and ClimateR official Repository link below
+This Tutorial below is on How to create climateR maps using Terraclimate dataset  this will Include Yearly,Monthly and Finally Mean As illustrated ,The Main Country/Area of Interest would be Kingdom of Saudi Arabia and Before I continue Much Special Thanks to Creator of ClimateR Mike Johnson -[@mikejohnson51] and also Monika Anna Tomaszewska for helping me out, you can check it out and ClimateR official Repository link below
 
 https://github.com/mikejohnson51/climateR
 
@@ -371,13 +371,61 @@ ggplot() +
 ```
 It would result into this Output
 ![Morogoro](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/9c2465d9-66a9-48ea-b7da-69df0ccf567d)
+# Visualizing with Different colors
+So the other thing I wanted to share with you is visualizing with more colors with pallete package called colorspace which can be downloaded as follows
+```r
+install.package(colorspace)
+```
+which could be utilized as following code 
 
+```r
+library(climateR)
+library(terra)
+library(tidyterra)
+library(ggplot2)
+library(sf)
+library(shapefiles)
+library(colorspace)
 
+SAU = AOI::aoi_get(country = "SAU")
+
+test_data = getTerraClim(
+  AOI = SAU,
+  varname = "tmax",
+  startDate = "2011-01-01",
+  endDate   = "2012-12-01"
+)
+
+data = tapp(test_data[[1]],
+            rep(1:(nlyr(test_data[[1]]) / 12), 12),
+            mean) |>
+  mask(project(vect(SAU), crs(test_data[[1]])))
+
+names(data) = c("2011", "2012")
+
+ggplot() +
+  geom_spatraster(data = data) +
+  geom_spatvector(data = SAU, fill = NA, lwd = 1) + # Set color to "black"
+  facet_wrap( ~ lyr) +
+  scale_fill_continuous_sequential(palette = "YlOrRd",na.value = "transparent") +
+  labs(title = "Yearly temperature of Saudi Arabia of the years 2011 and 2012",
+       fill = "Temperature (°C)") + # Add title
+  theme_minimal()
+```
+Which would result into following output
+![Saudi New](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/c50e92ea-c865-4267-a312-bd165028dacd)
+
+Colorspace has a lot of color choices which you could use in Visualizing Temperature and Precipitation ,In which i would illustrate further
 # Final Touches - Pallete explanation
 So I wanted to share you the pallete is used found in Tidyterra
-The words "muted" and "deep" are color palette used ,normally for Temperature and Rainfall Representation Below is PNG of more color pallete
+The words "muted" and "deep" are color palette used ,normally for Temperature and Rainfall Representation Below is photo of more color pallete
 
 ![Palette](https://github.com/Heed725/Terraclimate-ClimateR/assets/86722789/a0594fe9-f483-4058-bfc5-eb6c6384f64b)
+
+But when colorspace mostly "YlOrRd","Heat2" and "OrYel" are good for Temperature while for Rainfall/Precipitation  "Mako" and "PuBu" are preferable but choice is yours below is photo for more color pallete for colorspace package
+
+![Palette 2](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/8a7ae7cb-489f-466e-a94a-2fde5d9c9231)
+
 
 # Citation and reference 
 
