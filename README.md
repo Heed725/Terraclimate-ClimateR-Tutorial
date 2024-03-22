@@ -451,7 +451,41 @@ which would result into following output
 
 ![Saudi Month New](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/0e32ca50-28ef-4c0d-9f48-f8f9961e2fb0)
 
+Another final example on color use im going to represent Morogoro Region,Tanzania Rainfall in between 2011 and 2012 as illustrated in code below
+```r
+library(climateR)
+library(terra)
+library(tidyterra)
+library(ggplot2)
+library(sf)
+library(shapefiles)
 
+MOR <- st_read("C:/Moro.shp")
+test_data = getTerraClim(
+  AOI = MOR,
+  varname = "ppt",
+  startDate = "2011-01-01",
+  endDate   = "2012-12-01"
+)
+
+data = tapp(test_data[[1]],
+            rep(1:12, (nlyr(test_data[[1]]) / 12)),
+            mean) |>
+  mask(project(vect(MOR), crs(test_data[[1]])))
+
+names(data) = c("January", "February","March","April","May","June","July","August","September","October","November","December")
+
+ggplot() +
+  geom_spatraster(data = data) +
+  geom_spatvector(data = MOR, fill = NA, lwd = 1) +
+  facet_wrap( ~ lyr) +
+  scale_fill_continuous_sequential(palette = "Blues 3",na.value = "transparent") +
+  labs(title = "Monthly Precipitation of Morogoro Region for years 2011 and 2012",fill = "Precipitation (mm)") +
+  theme_minimal()+ 
+  coord_sf(xlim = c(35.5, 40), ylim = c(-5.5, -10.5)) # Adjust longitude values as needed
+```
+Which would result into following Output
+![Monthly Morogoro Precipitation](https://github.com/Heed725/Terraclimate-ClimateR-Tutorial/assets/86722789/26f69eb4-59a4-47b0-b944-081146b941dd)
 
 
 Colorspace has a lot of color choices which you could use in Visualizing Temperature and Precipitation ,In which i would illustrate further
