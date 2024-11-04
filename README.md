@@ -459,6 +459,7 @@ library(tidyterra)
 library(ggplot2)
 library(sf)
 library(shapefiles)
+library(colorspace)
 
 MOR <- st_read("C:/Moro.shp")
 test_data = getTerraClim(
