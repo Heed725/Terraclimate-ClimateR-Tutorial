@@ -28,14 +28,14 @@ library(shapefiles)
 Then you write a code to fetch area of Interest using 3-Country code of The country of Interest
 
 ```r
-SAU = AOI::aoi_get(country = "SAU")
+YMN = AOI::aoi_get(country = "YMN")
 
 ```
 The you write the codes to fetch the raster files containing climate(Take note on Parameter or varname) and the years can change wherever year you want let say 2000 to 2010 ,but for this example Only two years were used 2011 and 2012
 
 ```r
 test_data = getTerraClim(
-  AOI = SAU,
+  AOI = YMN,
   varname = "tmax",
   startDate = "2011-01-01",
   endDate   = "2012-12-01"
@@ -48,7 +48,7 @@ Then You write code for Indexing and masking the Raster
 data = tapp(test_data[[1]],
             rep(1:(nlyr(test_data[[1]]) / 12), 12),
             mean) |>
-  mask(project(vect(SAU), crs(test_data[[1]])))
+  mask(project(vect(YMN), crs(test_data[[1]])))
 
 names(data) = c("2011", "2012")
 ```
@@ -58,14 +58,14 @@ Then finally You write code for adding annotation and coloring the Raster
 ```r
 ggplot() +
   geom_spatraster(data = data) +
-  geom_spatvector(data = SAU, fill = NA, lwd = 1) +
+  geom_spatvector(data = YMN, fill = NA, lwd = 1) +
   facet_wrap( ~ lyr) +
   scale_fill_whitebox_c(
     palette  = "muted",
     n.breaks = 12,
     guide    = guide_legend(reverse = TRUE)
   ) +
-  labs(title = "Yearly temperature of Saudi Arabia of the years 2011 and 2012",
+  labs(title = "Yearly temperature of Yemen of the years 2011 and 2012",
        fill = "Temperature (°C)") + # Add title
   theme_minimal()
 ```
@@ -78,10 +78,10 @@ library(ggplot2)
 library(sf)
 library(shapefiles)
 
-SAU = AOI::aoi_get(country = "SAU")
+YMN = AOI::aoi_get(country = "YMN")
 
 test_data = getTerraClim(
-  AOI = SAU,
+  AOI = YMN,
   varname = "tmax",
   startDate = "2011-01-01",
   endDate   = "2012-12-01"
@@ -103,13 +103,13 @@ ggplot() +
     n.breaks = 12,
     guide    = guide_legend(reverse = TRUE)
   ) +
-  labs(title = "Yearly temperature of Saudi Arabia of the years 2011 and 2012",
+  labs(title = "Yearly temperature of Yemen of the years 2011 and 2012",
        fill = "Temperature (°C)") + # Add title
   theme_minimal()
 ```
 
 The final Output on This section would look like This 
-![Saudi Arabia Yearly](https://github.com/Heed725/Terraclimate-ClimateR/assets/86722789/25c32983-31fa-46b0-98ce-f97e0d560032)
+![Yemen Yearly](https://github.com/Heed725/Terraclimate-ClimateR/assets/86722789/25c32983-31fa-46b0-98ce-f97e0d560032)
 
 
 # Tutorial for Monthly Temperature Map of Area of Interest 
